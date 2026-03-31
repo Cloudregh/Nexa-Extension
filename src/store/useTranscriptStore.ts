@@ -3,8 +3,6 @@ import { create } from 'zustand'
 export type AudioSource = 'ambient' | 'tab'
 
 export interface TranscriptEntry {
-  id: string;
-  speaker: string;
   text: string;
   timestamp: string;
   isActive: boolean;
@@ -23,6 +21,8 @@ interface TranscriptState {
   transcript: TranscriptEntry[];
   interimText: string;
   insights: Insights;
+  aiResult: string;
+  aiLoading: boolean;
   duration: number;
 
   // Actions
@@ -31,6 +31,8 @@ interface TranscriptState {
   toggleListeningUi: () => void;
   setInterimText: (text: string) => void;
   appendTranscript: (text: string) => void;
+  setAiResult: (text: string) => void;
+  setAiLoading: (loading: boolean) => void;
   tickDuration: () => void;
   reset: () => void;
 }
@@ -55,6 +57,8 @@ export const useTranscriptStore = create<TranscriptState>((set) => ({
       { category: 'PERSONA', value: 'Digital Curator' }
     ]
   },
+  aiResult: '',
+  aiLoading: false,
   duration: 0,
 
   toggleRecording: () => {
@@ -62,11 +66,12 @@ export const useTranscriptStore = create<TranscriptState>((set) => ({
   },
   setAudioSource: (source) => set({ audioSource: source }),
   toggleListeningUi: () => set((state) => ({ isListeningUiOpen: !state.isListeningUiOpen })),
-  setInterimText: (text) => set({ interimText: text }),
+  setInterimText: (text) => {
+      console.log('Setting interim text:', text);
+      set({ interimText: text })
+  },
   appendTranscript: (text) => {
     const newEntry: TranscriptEntry = {
-      id: crypto.randomUUID(),
-      speaker: 'SPEAKER 1',
       text,
       timestamp: new Date().toLocaleTimeString([], { hour12: false }),
       isActive: false
@@ -76,12 +81,19 @@ export const useTranscriptStore = create<TranscriptState>((set) => ({
       interimText: ''
     }));
   },
+  setAiResult: (text) => {
+    console.log('Setting AI Result:', text);
+    set({ aiResult: text })
+  },
+  setAiLoading: (loading) => set({ aiLoading: loading }),
   tickDuration: () => set((state) => ({ duration: state.duration + 1 })),
   reset: () => set({
     isRecording: false,
     transcript: [],
     interimText: '',
     insights: { keyPoints: [], summary: '', terms: [] },
+    aiResult: '',
+    aiLoading: false,
     duration: 0
   })
 }));

@@ -1,17 +1,17 @@
 import { generateAi } from './SWhelpers/aiGenerator'
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  console.log("Service Worker: I am awake!");
+// chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+//   console.log("Service Worker: I am awake!");
 
-  if (message.type === 'PROCESS_TEXT') {
-    generateNotes(message.text)
-      .then((result) => sendResponse({ result }))
-      .catch((err) =>
-        sendResponse({ error: err instanceof Error ? err.message : 'Unknown error' })
-      )
-    return true
-  }
-})
+//   if (message.type === 'PROCESS_TEXT') {
+//     generateNotes(message.text)
+//       .then((result) => sendResponse({ result }))
+//       .catch((err) =>
+//         sendResponse({ error: err instanceof Error ? err.message : 'Unknown error' })
+//       )
+//     return true
+//   }
+// })
 
 
 
@@ -38,7 +38,7 @@ return await generateAi(text, systemPrompt)
 }
 
 
-const generateNotes = async (text: string) => {
+export const generateNotes = async (text: string) => {
   const cleaned = await cleanText(text)
   const systemPrompt = `
     Act as a Senior Executive Assistant. Analyze the provided CLEANED transcript to generate high-value notes.
