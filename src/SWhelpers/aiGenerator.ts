@@ -3,7 +3,7 @@ import { GoogleGenAI } from '@google/genai'
 const MODEL = 'gemini-2.5-flash' // or 'gemini-3.1-flash-lite' for even higher limits
 
 const getApiKey = () => {
-  return 'AIzaSyCmFHnLL1r3UPVT74lPpDpSTR_zBToAuUY';
+  return 'AIzaSyBl2bDN9lWzQCwrfa81mg4g8jKJWi_nMDc';
 };
 
 export async function generateAi(text: string, SYSTEM_PROMPT: string): Promise<string> {

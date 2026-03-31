@@ -6,14 +6,14 @@ import { useTranscriptStore } from './store/useTranscriptStore';
 
 function App() {
   useSpeechRecognition();
-  const { isListeningUiOpen } = useTranscriptStore();
+  const { isRecording } = useTranscriptStore();
 
   return (
-    <div className="w-[450px] h-[600px] flex flex-col bg-[#F8F9FB] font-sans selection:bg-blue-100">
+    <div className="w-[full h-[600px] flex flex-col bg-[#F8F9FB] font-sans selection:bg-blue-100">
       <TopBar />
       {/* Single scrollable area — ListeningPanel stays at top, InsightsPanel flows below */}
       <div className="flex-1 min-h-0 overflow-y-auto">
-        {isListeningUiOpen && <ListeningPanel />}
+        {isRecording && <ListeningPanel />}
         <InsightsPanel />
       </div>
     </div>

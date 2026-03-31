@@ -68,7 +68,7 @@ export const useTranscriptStore = create<TranscriptState>((set) => ({
   toggleListeningUi: () => set((state) => ({ isListeningUiOpen: !state.isListeningUiOpen })),
   setInterimText: (text) => {
       console.log('Setting interim text:', text);
-      set({ interimText: text })
+      set({ interimText: text });
   },
   appendTranscript: (text) => {
     const newEntry: TranscriptEntry = {

@@ -22,13 +22,13 @@ export const TopBar = () => {
         <AudioModeSwitch />
 
         {/* Ear Toggle — shows/hides the Listening overlay */}
-        <button
+        {/* <button
           onClick={toggleListeningUi}
           className={`transition-colors p-1.5 rounded-full ${isListeningUiOpen ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'}`}
           title="Toggle Listening UI"
         >
           <Ear className="w-4 h-4" />
-        </button>
+        </button> */}
 
         {/* Avatar */}
         <div className="w-7 h-7 rounded-full bg-linear-to-tr from-slate-200 to-slate-100 border border-slate-200 shadow-sm overflow-hidden flex items-center justify-center">
