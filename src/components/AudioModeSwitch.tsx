@@ -1,4 +1,5 @@
-import { useTranscriptStore, AudioSource } from '../store/useTranscriptStore';
+import { useTranscriptStore } from '../store/useTranscriptStore';
+import type { AudioSource } from '../store/useTranscriptStore';
 import { Mic, MonitorSpeaker } from 'lucide-react';
 
 const modes: { value: AudioSource; label: string; icon: typeof Mic }[] = [
