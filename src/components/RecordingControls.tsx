@@ -25,14 +25,14 @@ export const RecordingControls = () => {
   if (!isRecording && duration === 0) return null; 
 
   return (
-    <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-[#2c2c2c] rounded-[48px] px-8 py-3.5 shadow-2xl flex items-center space-x-8 border border-white/10 z-[100] animate-in slide-in-from-bottom-5 duration-500">
+    <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-[#2c2c2c] rounded-[48px] px-8 py-3.5 shadow-2xl flex items-center space-x-8 border border-white/10 z-100 animate-in slide-in-from-bottom-5 duration-500">
       
       <div className="flex flex-col items-center justify-center min-w-[80px]">
         <span className="text-[9px] text-white/50 font-bold tracking-[0.2em] uppercase mb-0.5">Duration</span>
         <span className="text-xl font-bold text-white tabular-nums tracking-widest">{formatDuration(duration)}</span>
       </div>
 
-      <div className="w-[1px] h-10 bg-white/10"></div>
+      <div className="w-px h-10 bg-white/10"></div>
 
       <div className="flex items-center space-x-4">
         <button 

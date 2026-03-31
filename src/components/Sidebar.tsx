@@ -19,7 +19,7 @@ export const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col h-full flex-shrink-0 shrink-0">
+    <aside className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col h-full shrink-0">
       <div className="p-6">
         <h1 className="text-xl font-bold tracking-tight text-slate-900">
           NEXA <span className="text-blue-600 ml-1">AI</span>

@@ -34,7 +34,7 @@ export const TranscriptPanel = () => {
         ))}
         
         {interimText && (
-          <div className="border-l-[3px] border-blue-400 bg-gradient-to-r from-blue-50/50 to-transparent p-5 rounded-r-xl opacity-90 transition-all duration-300">
+          <div className="border-l-[3px] border-blue-400 bg-linear-to-r from-blue-50/50 to-transparent p-5 rounded-r-xl opacity-90 transition-all duration-300">
              <div className="flex items-center space-x-3 mb-2.5">
               <span className="text-[11px] font-bold text-slate-400 tracking-widest uppercase">
                  <span className="inline-block w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce mr-2"></span>

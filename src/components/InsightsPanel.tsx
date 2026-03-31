@@ -22,7 +22,7 @@ export const InsightsPanel = () => {
           <ul className="space-y-4">
             {insights.keyPoints.map((kp, i) => (
               <li key={i} className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                 <Sparkles className="w-4 h-4 text-blue-500 mt-1 flex-shrink-0" />
+                 <Sparkles className="w-4 h-4 text-blue-500 mt-1 shrink-0" />
                  <span className="text-[14px] text-slate-600 leading-relaxed">{kp}</span>
               </li>
             ))}
