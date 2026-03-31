@@ -16,6 +16,8 @@ export interface Insights {
 
 interface TranscriptState {
   isRecording: boolean;
+  audioSource: 'tab' | 'computer';
+  isListeningUiOpen: boolean;
   transcript: TranscriptEntry[];
   interimText: string;
   insights: Insights;
@@ -23,6 +25,8 @@ interface TranscriptState {
   
   // Actions
   toggleRecording: () => void;
+  setAudioSource: (source: 'tab' | 'computer') => void;
+  toggleListeningUi: () => void;
   setInterimText: (text: string) => void;
   appendTranscript: (text: string) => void;
   tickDuration: () => void;
@@ -37,6 +41,8 @@ const mockKeyPoints = [
 
 export const useTranscriptStore = create<TranscriptState>((set) => ({
   isRecording: false,
+  audioSource: 'computer',
+  isListeningUiOpen: true, // Show by default or tied to interaction
   transcript: [],
   interimText: '',
   insights: {
@@ -54,6 +60,8 @@ export const useTranscriptStore = create<TranscriptState>((set) => ({
   toggleRecording: () => {
     set((state) => ({ isRecording: !state.isRecording }));
   },
+  setAudioSource: (source) => set({ audioSource: source }),
+  toggleListeningUi: () => set((state) => ({ isListeningUiOpen: !state.isListeningUiOpen })),
   setInterimText: (text) => set({ interimText: text }),
   appendTranscript: (text) => {
     const newEntry: TranscriptEntry = {
