@@ -11,5 +11,10 @@
     "service_worker": "assets/background.js",
     "type": "module"
   },
-  "permissions": ["storage", "tabCapture"]
+  "permissions": [
+    "tabCapture",
+    "offscreen",
+    "storage",
+    "activeTab"
+  ]
 }
