@@ -2,6 +2,14 @@ import { create } from 'zustand'
 
 export type AudioSource = 'ambient' | 'tab'
 
+export interface TranscriptEntry {
+  id: string;
+  speaker: string;
+  text: string;
+  timestamp: string;
+  isActive: boolean;
+}
+
 export interface Insights {
   keyPoints: string[];
   summary: string;
@@ -10,26 +18,17 @@ export interface Insights {
 
 interface TranscriptState {
   isRecording: boolean;
-<<<<<<< HEAD
-  audioSource: 'tab' | 'computer';
+  audioSource: AudioSource;
   isListeningUiOpen: boolean;
   transcript: TranscriptEntry[];
-=======
-  audioSource: AudioSource;
-  transcript: string[];
->>>>>>> 4654733e9a4d3e30a03aeaf6ee839b3f49c9400a
   interimText: string;
   insights: Insights;
   duration: number;
 
   // Actions
   toggleRecording: () => void;
-<<<<<<< HEAD
-  setAudioSource: (source: 'tab' | 'computer') => void;
-  toggleListeningUi: () => void;
-=======
   setAudioSource: (source: AudioSource) => void;
->>>>>>> 4654733e9a4d3e30a03aeaf6ee839b3f49c9400a
+  toggleListeningUi: () => void;
   setInterimText: (text: string) => void;
   appendTranscript: (text: string) => void;
   tickDuration: () => void;
@@ -38,40 +37,47 @@ interface TranscriptState {
 
 export const useTranscriptStore = create<TranscriptState>((set) => ({
   isRecording: false,
-<<<<<<< HEAD
-  audioSource: 'computer',
-  isListeningUiOpen: true, // Show by default or tied to interaction
-=======
   audioSource: 'ambient',
->>>>>>> 4654733e9a4d3e30a03aeaf6ee839b3f49c9400a
+  isListeningUiOpen: true,
   transcript: [],
   interimText: '',
   insights: {
-    keyPoints: [],
-    summary: '',
-    terms: []
+    keyPoints: [
+      'Focus on Modular Intelligence for better node communication.',
+      "Reduction of Cognitive Load through pre-filtering context.",
+      "Implementation of the 'Curator' Model for digital archiving."
+    ],
+    summary: 'The discussion is shifting from raw data processing to high-level information curation. The team is aiming to build a system that acts as a proactive digital archivist to help users manage information density.',
+    terms: [
+      { category: 'ARCHITECTURE', value: 'Modular Intel' },
+      { category: 'UX METRIC', value: 'Cognitive Load' },
+      { category: 'AI LOGIC', value: 'Context Filter' },
+      { category: 'PERSONA', value: 'Digital Curator' }
+    ]
   },
   duration: 0,
+
   toggleRecording: () => {
     set((state) => ({ isRecording: !state.isRecording }));
   },
   setAudioSource: (source) => set({ audioSource: source }),
-<<<<<<< HEAD
   toggleListeningUi: () => set((state) => ({ isListeningUiOpen: !state.isListeningUiOpen })),
-=======
->>>>>>> 4654733e9a4d3e30a03aeaf6ee839b3f49c9400a
-  setInterimText: (text) => set({ interimText: text }),
+  setInterimText: (text) => {
+    console.log(text);
+    set({ interimText: text })
+  },
   appendTranscript: (text) => {
-    const newEntry: string = `${new Date().toLocaleTimeString([], { hour12: false })}: ${text}`;
-
-    set((state) => {
-      const updatedTranscript = [...state.transcript, newEntry];
-
-      return {
-        transcript: updatedTranscript,
-        interimText: ''
-      };
-    });
+    const newEntry: TranscriptEntry = {
+      id: crypto.randomUUID(),
+      speaker: 'SPEAKER 1',
+      text,
+      timestamp: new Date().toLocaleTimeString([], { hour12: false }),
+      isActive: false
+    };
+    set((state) => ({
+      transcript: [...state.transcript.map(t => ({ ...t, isActive: false })), newEntry],
+      interimText: ''
+    }));
   },
   tickDuration: () => set((state) => ({ duration: state.duration + 1 })),
   reset: () => set({

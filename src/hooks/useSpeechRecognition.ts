@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useTranscriptStore } from '../store/useTranscriptStore';
 
-interface SpeechRecognitionWithStream extends SpeechRecognition {
-  audioStream?: MediaStream;
-}
+// Use any-typed recognition to avoid missing webkitSpeechRecognition global typings
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SpeechRecognitionWithStream = any;
 
 function createRecognition(
   audioStream?: MediaStream
@@ -34,7 +34,7 @@ function setupRecognitionHandlers(
 ) {
   const { setInterimText, appendTranscript } = useTranscriptStore.getState();
 
-  recognition.onresult = (event: SpeechRecognitionEvent) => {
+  recognition.onresult = (event: any) => {
     let interimTranscript = '';
     let finalTranscript = '';
 
@@ -52,25 +52,10 @@ function setupRecognitionHandlers(
 
     if (finalTranscript.trim()) {
       appendTranscript(finalTranscript.trim());
-
-      if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
-        try {
-          chrome.runtime.sendMessage(
-            { type: 'PROCESS_TEXT', text: finalTranscript.trim() },
-            () => {
-              if (chrome.runtime.lastError) {
-                // swallow
-              }
-            }
-          );
-        } catch {
-          // context invalidated
-        }
-      }
     }
   };
 
-  recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+  recognition.onerror = (event: any) => {
     console.error('Speech recognition error:', event.error);
     if (event.error === 'not-allowed') {
       useTranscriptStore.getState().toggleRecording();
