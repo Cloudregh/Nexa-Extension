@@ -62,10 +62,7 @@ export const useTranscriptStore = create<TranscriptState>((set) => ({
   },
   setAudioSource: (source) => set({ audioSource: source }),
   toggleListeningUi: () => set((state) => ({ isListeningUiOpen: !state.isListeningUiOpen })),
-  setInterimText: (text) => {
-    console.log(text);
-    set({ interimText: text })
-  },
+  setInterimText: (text) => set({ interimText: text }),
   appendTranscript: (text) => {
     const newEntry: TranscriptEntry = {
       id: crypto.randomUUID(),
