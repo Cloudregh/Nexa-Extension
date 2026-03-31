@@ -23,10 +23,9 @@ export const TranscriptPanel = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto px-10 py-8 space-y-8 scroll-smooth relative">
-        {transcript.map((block) => (
-          <div key={block.id} className="transition-all duration-500 ease-in-out">
+        {transcript.map((block, i) => (
+          <div key={i} className="transition-all duration-500 ease-in-out">
             <div className="flex items-center space-x-3 mb-2.5">
-              <span className="text-[11px] font-bold text-blue-600 tracking-widest uppercase">{block.speaker}</span>
               <span className="text-[11px] text-slate-400 font-medium">{block.timestamp}</span>
             </div>
             <p className="text-slate-700 leading-relaxed text-[16px] max-w-4xl">{block.text}</p>

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranscriptStore } from '../store/useTranscriptStore';
+import { generateNotes } from '../background';
 
 // Use any-typed recognition to avoid missing webkitSpeechRecognition global typings
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,6 +108,7 @@ export const useSpeechRecognition = () => {
   const { isRecording, audioSource } = useTranscriptStore();
   const recognitionRef = useRef<SpeechRecognitionWithStream | null>(null);
   const tabStreamRef = useRef<MediaStream | null>(null);
+  const wasRecordingRef = useRef(false);
 
   const cleanup = () => {
     if (recognitionRef.current) {
@@ -166,7 +168,30 @@ export const useSpeechRecognition = () => {
     }
   };
 
+  const sendTranscriptToWorker = async () => {
+    const { transcript, setAiResult, setAiLoading } = useTranscriptStore.getState();
+    if (transcript.length === 0) return;
+
+    const fullText = transcript.map((e) => e.text).join('\n');
+
+    setAiLoading(true);
+    setAiResult('');
+    
+    const result = await generateNotes(fullText);
+
+    setAiResult(result);
+
+    setAiLoading(false);
+  };
+
   useEffect(() => {
+    // Detect transition from recording to stopped
+    if (wasRecordingRef.current && !isRecording) {
+      sendTranscriptToWorker();
+      console.log('Stopped recording, sent transcript to worker');
+    }
+    wasRecordingRef.current = isRecording;
+
     if (!isRecording) {
       cleanup();
       return;
