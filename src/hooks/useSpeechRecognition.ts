@@ -176,9 +176,10 @@ export const useSpeechRecognition = () => {
 
     setAiLoading(true);
     setAiResult('');
-    
-    const result = await generateNotes(fullText);
 
+    const result = await generateNotes(fullText);
+    console.log('Received AI result:', result);
+    
     setAiResult(result);
 
     setAiLoading(false);
