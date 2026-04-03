@@ -1,9 +1,9 @@
-import { Ear, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { useTranscriptStore } from '../store/useTranscriptStore';
 import { AudioModeSwitch } from './AudioModeSwitch';
 
 export const TopBar = () => {
-  const { isRecording, toggleListeningUi, isListeningUiOpen } = useTranscriptStore();
+  const { isRecording } = useTranscriptStore();
 
   return (
     <header className="shrink-0 h-16 border-b border-slate-200/60 bg-white/80 backdrop-blur-md flex items-center justify-between px-6 w-full relative z-50">
@@ -21,14 +21,6 @@ export const TopBar = () => {
         {/* Audio Source Mode Switch (Tab vs Ambient) */}
         <AudioModeSwitch />
 
-        {/* Ear Toggle — shows/hides the Listening overlay */}
-        {/* <button
-          onClick={toggleListeningUi}
-          className={`transition-colors p-1.5 rounded-full ${isListeningUiOpen ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'}`}
-          title="Toggle Listening UI"
-        >
-          <Ear className="w-4 h-4" />
-        </button> */}
 
         {/* Avatar */}
         <div className="w-7 h-7 rounded-full bg-linear-to-tr from-slate-200 to-slate-100 border border-slate-200 shadow-sm overflow-hidden flex items-center justify-center">

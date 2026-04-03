@@ -1,12 +1,7 @@
 
 import { Radio, ScrollText, History, FolderOpen } from 'lucide-react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { useTranscriptStore } from '../store/useTranscriptStore';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { cn } from '../lib/utils';
 
 export const Sidebar = () => {
   const { isRecording, toggleRecording } = useTranscriptStore();

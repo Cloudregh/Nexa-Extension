@@ -1,23 +1,51 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useTranscriptStore } from '../store/useTranscriptStore';
 import { generateNotes } from '../background';
 
-// Use any-typed recognition to avoid missing webkitSpeechRecognition global typings
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SpeechRecognitionWithStream = any;
+// Use proper types for Speech Recognition
+interface SpeechRecognitionEvent extends Event {
+  readonly resultIndex: number;
+  readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  readonly error: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  audioStream?: MediaStream;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+interface SpeechRecognitionConstructor {
+  new (): SpeechRecognition;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
+}
 
 function createRecognition(
   audioStream?: MediaStream
-): SpeechRecognitionWithStream | null {
-  const SpeechRecognition =
-    (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+): SpeechRecognition | null {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
     console.warn('Speech recognition is not supported in this browser.');
     return null;
   }
 
-  const recognition: SpeechRecognitionWithStream = new SpeechRecognition();
+  const recognition = new SpeechRecognition();
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = 'en-US';
@@ -30,12 +58,12 @@ function createRecognition(
 }
 
 function setupRecognitionHandlers(
-  recognition: SpeechRecognitionWithStream,
+  recognition: SpeechRecognition,
   onError: (err: string) => void
 ) {
   const { setInterimText, appendTranscript } = useTranscriptStore.getState();
 
-  recognition.onresult = (event: any) => {
+  recognition.onresult = (event: SpeechRecognitionEvent) => {
     let interimTranscript = '';
     let finalTranscript = '';
 
@@ -56,7 +84,7 @@ function setupRecognitionHandlers(
     }
   };
 
-  recognition.onerror = (event: any) => {
+  recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
     console.error('Speech recognition error:', event.error);
     if (event.error === 'not-allowed') {
       useTranscriptStore.getState().toggleRecording();
@@ -106,11 +134,11 @@ async function captureTabAudio(): Promise<MediaStream | null> {
 
 export const useSpeechRecognition = () => {
   const { isRecording, audioSource } = useTranscriptStore();
-  const recognitionRef = useRef<SpeechRecognitionWithStream | null>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const tabStreamRef = useRef<MediaStream | null>(null);
   const wasRecordingRef = useRef(false);
 
-  const cleanup = () => {
+  const cleanup = useCallback(() => {
     if (recognitionRef.current) {
       try {
         recognitionRef.current.onresult = null;
@@ -126,9 +154,9 @@ export const useSpeechRecognition = () => {
       tabStreamRef.current.getTracks().forEach((t) => t.stop());
       tabStreamRef.current = null;
     }
-  };
+  }, []);
 
-  const startAmbient = () => {
+  const startAmbient = useCallback(() => {
     cleanup();
     const recognition = createRecognition();
     if (!recognition) return;
@@ -141,9 +169,9 @@ export const useSpeechRecognition = () => {
     } catch {
       // already started
     }
-  };
+  }, [cleanup]);
 
-  const startTab = async () => {
+  const startTab = useCallback(async () => {
     cleanup();
 
     const stream = await captureTabAudio();
@@ -166,9 +194,9 @@ export const useSpeechRecognition = () => {
     } catch {
       // already started
     }
-  };
+  }, [cleanup]);
 
-  const sendTranscriptToWorker = async () => {
+  const sendTranscriptToWorker = useCallback(async () => {
     const { transcript, setAiResult, setAiLoading } = useTranscriptStore.getState();
     if (transcript.length === 0) return;
 
@@ -183,7 +211,7 @@ export const useSpeechRecognition = () => {
     setAiResult(result);
 
     setAiLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     // Detect transition from recording to stopped
@@ -207,5 +235,5 @@ export const useSpeechRecognition = () => {
     return () => {
       cleanup();
     };
-  }, [isRecording, audioSource]);
+  }, [isRecording, audioSource, cleanup, startAmbient, startTab, sendTranscriptToWorker]);
 };
